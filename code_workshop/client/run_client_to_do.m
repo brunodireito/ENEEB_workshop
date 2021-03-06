@@ -16,13 +16,13 @@ host='localhost';
 % hint: server port?
 % port=
 %%
-port=3000; % to_do
+
 
 %% [TODO:] Define client side.
 % hint: server port?
 % datapoint_size=
 %%
-datapoint_size=328; % to_do
+
 
 bytearrayread='';
 t_idx=1;
@@ -34,7 +34,6 @@ numberpoints=2560;
 % hint: look at montage.
 % numberchans=
 %%
-numberchans=40; % to_do
 
 % data cleaning vars.
 windowsize=20;
@@ -48,14 +47,14 @@ I2 = imread('hands_left-100_right-60.png');
 I3 = imread('hands_left-60_right-100.png');
 
 % Start image
-hf_c=figure('name','interface','position',[100 100 1000 600])
+hf_c=figure('name','interface','position',[100 100 1000 600]);
 
 %% [TODO:] load classifier model previously trained.
 % hint: help load.
 % hint: 'classifier.mat'.
 % load
 %%
-load('classifier.mat') %to_do
+
 
 %% ------------------------------------------------------------------------
 
@@ -67,26 +66,21 @@ load('classifier.mat') %to_do
 
 % Create OBJ client and initialize.
 % client=
-% connected=
+% connected=client.
 %%
-
-client=Eneeb_client(host, port); % to_do
-connected=client.initialize(); % to_do
 
 if connected
     
     try
         
         %% Prepare plot for arriving data
-       
+        
         subplot(2,1,1);
-
-
-
+        
         datareceivedchan=0;
         t = 0;
         h_plot=plot(t, datareceivedchan);
-        
+        title('Raw data.')
         set(h_plot, ...
             'LineWidth'       , 1           , ...
             'Marker'          , 'o'         , ...
@@ -119,7 +113,7 @@ if connected
             % Use client and read message in server.
             % bytearrayread=client.
             %%
-            bytearrayread=client.readmessage(datapoint_size); % to_do
+            
             
             % If last point (Remember last message sent from server when finished!)
             if (sum(bytearrayread)==0)
@@ -141,7 +135,8 @@ if connected
                 
                 %% update plot for chan 1.
                 datareceivedchan(t)=datapoints(t,1);
-                subplot(2,1,1); 
+                subplot(2,1,1);
+                
                 set(h_plot, 'XData',1:t, 'YData', datareceivedchan);
                 
                 %% Real-time preprocessing. Proceed carefully.
@@ -168,19 +163,15 @@ if connected
                         % m_data=
                         % std_data=
                         %%
-                        m_data=mean(datasegment(:,ch)); %to_do
-                        std_data=std(datasegment(:,ch)); %to_do
+                        
                         
                         %% [TODO:] find ouliers based on window average and std - remember data_science.m)
                         % hint: find, abs, outlcoef, m_data, std_data
                         
                         % outliers_idxs=
                         %%
-                        outliers_idxs=find(abs(m_data-datasegment(:,ch))>outlcoef*std_data);
                         
-                        %                     if(~isempty(outliers_idxs))
-                        %                         fprintf('found outliers in ch %i, idx %i \n', ch, t)
-                        %                     end
+                        
                         
                         % Can you remember the alternatives?
                         for i =1:length(outliers_idxs)
@@ -203,9 +194,8 @@ if connected
                     % hint: check loaded trained model
                     % hint: to predict the class of an event we can use model.predictFcn(datapoint)
                     
-                    % yfit=
+                    % yfit(t)=
                     %%
-                    yfit(t)=trainedClassifier.predictFcn(datasegmentcleaned(t, bestfeats)); %to_do
                     
                     if yfit(t)==datapoints(t,41)
                         fprintf('The classifier was correct for sample %i.\n', t);
@@ -213,18 +203,18 @@ if connected
                         fprintf('The classifier was incorrect for sample %i.\n', t);
                     end
                     
-                    subplot(2,1,2); 
+                    subplot(2,1,2);
+                    title('classification output.')
                     switch yfit(t)
-                        case 0
+                        case 0 % baseline
                             image(I1);
-                        case 1
+                        case 1 % left
                             image(I2);
-                        case 2
+                        case 2 % right
                             image(I3);
                     end
                     
                 end
-                
                 
             end
             
@@ -233,11 +223,13 @@ if connected
         accuracy = sum(yfit==datapoints(:,41)')/numel(yfit) * 100;
         fprintf('The classifier was correct %.3f%% of times.\n', accuracy)
         
+        client.close();
+        
     catch ME
         client.close()
         rethrow(ME)
     end
     
-    client.close()
+    
     
 end
