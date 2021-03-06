@@ -15,6 +15,8 @@ bytearray=[];
 % server=
 % connected=server.
 %%
+server=Eneeb_server(host, port); % to_do
+connected=server.initialize();  % to_do
 
 if connected
     try
@@ -34,7 +36,8 @@ if connected
             
             % server.
             %%
-            
+            server.sendmessage(bytearray); % to_do
+
             pause(.25)
             
             fprintf('[SERVER: ] Sample # %i sent.\n', i);
@@ -47,7 +50,8 @@ if connected
         
         % server.;
         %%
-        
+        server.sendmessage(zeros(1,328)); % to_do
+
         fprintf('[SERVER: ] Last sample sent.\n');
         
         % Close server.

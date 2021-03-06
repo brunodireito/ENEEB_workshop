@@ -16,12 +16,14 @@ host='localhost';
 % hint: server port?
 % port=
 %%
+port=3000; % to_do
 
 
 %% [TODO:] Define client side.
 % hint: server port?
 % datapoint_size=
 %%
+datapoint_size=328; % to_do
 
 
 bytearrayread='';
@@ -34,6 +36,8 @@ numberpoints=2560;
 % hint: look at montage.
 % numberchans=
 %%
+numberchans=40; % to_do
+
 
 % data cleaning vars.
 windowsize=20;
@@ -54,6 +58,7 @@ hf_c=figure('name','interface','position',[100 100 1000 600]);
 % hint: 'classifier.mat'.
 % load
 %%
+load('classifier.mat') %to_do
 
 
 %% ------------------------------------------------------------------------
@@ -68,6 +73,9 @@ hf_c=figure('name','interface','position',[100 100 1000 600]);
 % client=
 % connected=client.
 %%
+client=Eneeb_client(host, port); % to_do
+connected=client.initialize(); % to_do
+
 
 if connected
     
@@ -113,7 +121,8 @@ if connected
             % Use client and read message in server.
             % bytearrayread=client.
             %%
-            
+            bytearrayread=client.readmessage(datapoint_size); % to_do
+
             
             % If last point (Remember last message sent from server when finished!)
             if (sum(bytearrayread)==0)
@@ -163,6 +172,8 @@ if connected
                         % m_data=
                         % std_data=
                         %%
+                        m_data=mean(datasegment(:,ch)); %to_do
+                        std_data=std(datasegment(:,ch)); %to_do
                         
                         
                         %% [TODO:] find ouliers based on window average and std - remember data_science.m)
@@ -170,7 +181,7 @@ if connected
                         
                         % outliers_idxs=
                         %%
-                        
+                        outliers_idxs=find(abs(m_data-datasegment(:,ch))>outlcoef*std_data);
                         
                         
                         % Can you remember the alternatives?
@@ -196,7 +207,8 @@ if connected
                     
                     % yfit(t)=
                     %%
-                    
+                    yfit(t)=trainedClassifier.predictFcn(datasegmentcleaned(t, bestfeats)); %to_do
+
                     if yfit(t)==datapoints(t,41)
                         fprintf('The classifier was correct for sample %i.\n', t);
                     else
