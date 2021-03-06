@@ -1,3 +1,7 @@
+% Help us to improve 
+% Please answer some questions.
+% https://docs.google.com/forms/d/e/1FAIpQLScz1FjMOB-1cXE41YDhjYvgSJiVky8mx2lXEN3rI8BO2UpE3w/viewform?usp=sf_link
+
 %% Let's explore the training set.
 
 % Load data.

@@ -230,6 +230,4 @@ if connected
         rethrow(ME)
     end
     
-    
-    
 end
